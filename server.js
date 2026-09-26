@@ -1,4 +1,3 @@
-
 const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
@@ -9,15 +8,16 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// index.html ana dizinde olduğu için doğrudan kök dizini sunuyoruz
 app.use(express.static(__dirname));
 
 wss.on('connection', (ws) => {
-  // Doğrudan Ubuntu dağıtımını başlatır (varsayılan WSL için args dizisi [] yapılabilir)
-  const ptyProcess = pty.spawn('wsl.exe', ['-d', 'Ubuntu'], {
+  // Render gerçek Linux olduğu için doğrudan 'bash' kabuğu başlatılır
+  const ptyProcess = pty.spawn('bash', [], {
     name: 'xterm-color',
     cols: 80,
     rows: 24,
-    cwd: process.env.USERPROFILE,
+    cwd: process.env.HOME || process.cwd(),
     env: process.env
   });
 
@@ -42,7 +42,8 @@ wss.on('connection', (ws) => {
   });
 });
 
-const PORT = 3000;
+// Render'ın dinamik portunu alır
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`WinWSL Çoklu Oturum Sunucusu: http://localhost:${PORT}`);
+  console.log(`Web terminali aktif: Port ${PORT}`);
 });
