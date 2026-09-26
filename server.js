@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname));
 
 wss.on('connection', (ws) => {
   // Doğrudan Ubuntu dağıtımını başlatır (varsayılan WSL için args dizisi [] yapılabilir)
